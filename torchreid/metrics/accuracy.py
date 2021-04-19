@@ -1,7 +1,8 @@
 from __future__ import division, print_function, absolute_import
+import torch
 
 
-def accuracy(output, target, topk=(1, )):
+def accuracy(output: torch.Tensor, target: torch.LongTensor, topk=(1, )):
     """Computes the accuracy over the k top predictions for
     the specified values of k.
 

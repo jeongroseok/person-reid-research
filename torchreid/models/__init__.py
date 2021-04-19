@@ -86,8 +86,12 @@ def show_avai_models():
 
 
 def build_model(
-    name, num_classes, loss='softmax', pretrained=True, use_gpu=True
-):
+    name,
+    num_classes,
+    loss='softmax',
+    pretrained=True,
+    use_gpu=True
+) -> torch.nn.Module:
     """A function wrapper for building a model.
 
     Args:
