@@ -2,33 +2,6 @@ from torchreid.data import datamanager
 import torchreid
 import torch
 
-
-class MyModel(torch.nn.Module):
-
-    def __init__(self, num_classes: int, loss: str):
-        super().__init__()
-        self.num_classes = num_classes
-        self.loss = loss
-        self.extractor = torch.nn.Sequential(
-            torch.nn.Conv2d(3, 6, 5), torch.nn.MaxPool2d(2, 2),
-            torch.nn.Conv2d(6, 16, 5), torch.nn.AdaptiveAvgPool2d((1, 1))
-        )
-        self.classifier = torch.nn.Sequential(torch.nn.Linear(16, num_classes))
-
-    def forward(self, x: torch.Tensor):
-        v = self.extractor.forward(x)
-        v = v.view(v.size(0), -1)
-
-        y = self.classifier.forward(v)
-
-        return torch.ones((x.shape[0], self.num_classes))
-
-        if self.loss == 'softmax':
-            return y
-        elif self.loss == 'triplet':
-            return y, v
-
-
 if __name__ == '__main__':
     data_manager = torchreid.data.ImageDataManager(
         root='data',
@@ -40,13 +13,12 @@ if __name__ == '__main__':
         train_sampler='RandomIdentitySampler' # this is important
     )
 
-    # model = torchreid.models.build_model(
-    #     name='resnet18',
-    #     num_classes=data_manager.num_train_pids,
-    #     loss='softmax',
-    #     pretrained=False
-    # ).cuda()
-    model = MyModel(data_manager.num_train_pids, loss='softmax').cuda()
+    model = torchreid.models.build_model(
+        name='resnet18',
+        num_classes=data_manager.num_train_pids,
+        loss='softmax',
+        pretrained=False
+    ).cuda()
 
     # torchreid.utils.load_pretrained_weights(
     #     model, './log/model/model.pth.tar-3'
